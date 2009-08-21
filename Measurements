@@ -1,0 +1,17 @@
+Here I keep track of performance and error metrics.
+
+bandwidthplace.com speed tests:
+
+Linux: 08.08.2003
+
+28.5
+31
+33.9
+33.9
+28.5
+
+Average 31.16 kbps
+
+Error rate: 88 errors/563 rx packets = 15% error rate
+
+Coming soon, comparison with windows driver.

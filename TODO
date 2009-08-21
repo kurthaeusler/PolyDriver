@@ -1,0 +1,71 @@
+See if adding a pre-write CTS checking loop to polydriver reduces the error
+rate.
+
+Make a logging format that looks like windows portmon output, to make
+comparison easier.
+
+Must make it possible for it to read the 4 byte header from the modem then
+write some data to the modem, then read the rest of the packet from the modem.
+This would involve either threading, or saving the state of the read.
+It probably involves a quick rewrite, which is what this thing needs to go to
+beta 0.1.0
+
+In display function, chars above 200 should also be dots, to prevent /octal
+codes in syslog
+
+Add logging facility to count up dropped data, and reasons etc.
+
+Need to check ppp debug output for packets with ppp checksum errors, see if
+problem is obvious. use record option
+
+Make sure all modem status register bits are what they should be
+So make a function that prints what flags are set, or unset, in the
+msr.
+
+Trim all printfs etc, from polydriver, and wrap the prints around if(debug)s
+
+Installer needs to finish up nicely.
+
+In the CTS loops, we need a timeout
+
+Test various error conditions, ie, no modem attached or wrong
+serial port, no dialtone etc. We could write ERROR first
+
+Make it not quit if the modem cant be opened or doesnt answer, instead
+reset the pty or something
+
+Restructure so that all initial reads are only 4 bytes, and subsequent reads
+try to get what the header says. inbuf[2]+(256*inbuf[3])+4 -res
+
+Timeouts on all select()s
+
+Add a reset option to the installer, for when the red light is on
+
+Install program and driver must reset serial port afterwards.
+tcsetattr(fd, TCSANOW, &oldtio)
+
+Should catch signals and do a proper shutdown after a term or kill
+
+Check for any bugs such as buffer overflows, range checking, off by 1s etc.
+
+Find out if performance can be improved somehow, to reduce the instances of
+ppp errors.
+
+Needs testing over getty style connections as well as ppp.
+
+Needs testing with other linux versions.
+
+Windows 2000 and XP version.
+
+User friendly setup program.
+
+.deb and/or .rpm packages.
+
+Installer gives up to easily. If something goes wrong it must detect it, fix
+it, and successfully complete the installation routine.  Giving up with an
+error message is only a development version feature, until the protocol is
+fully understood. The installer should also never leave the modems in a state
+where all 3 lights are on.
+
+Some of the current installer problems include not being able to get an answer
+to get basis settings, but it usually works on subsequent attempts.

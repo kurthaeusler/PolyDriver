@@ -1,0 +1,111 @@
+This package consists of the source and binary of 2 small programs needed for
+polymodem support on Linux.  The first is installer.
+
+1) Installer
+
+This program sends a sequence of commands to the both the Poly Modem and the
+Poly Basis, to set them up and initialize them.
+
+Its options are:
+
+	-b <basis>, where <basis> is the license number found on the bottom of
+	the polybasis, and looks like FGBCA95XYZ2
+
+	-m <modem> is the same as <basis> above, but it is the number on the
+	bottom of the polymodem
+
+	-s <serial port>, where <serial port> is the name of the port that the
+	polymodem is attached to. Normally /dev/ttyS0 or /dev/ttyS1
+
+	-d provides more debugging output
+
+	-h provides this information about the installer options.
+
+To use it, one would make sure that the polymodem is attached to the computer
+and run a command like ./installer -b FGBCA95XYZ2 -m FGBCA534HJK
+
+But with the correct license numbers from the undersides of the devices.
+
+2)  Polydriver
+
+The polydriver is a daemon, which means it runs in the background and sits
+quietly waiting for a program to initiate a modem connection.  It uses the
+concept of a pty/tty pair.  This means, that what ever is written to a tty
+can be read through the corresponding pty, and vice versa.  In this case
+the polydriver opens /dev/ptyp1 (changeable with command line flags) and waits
+for a dialup program, such as ppp or minicom to open /dev/ttyp1, and use that
+as its modem device.
+
+When this occurs, polydriver opens the real serial port, and perfoms a
+bi-directional translation function, inserting and removing the polytrax
+protocol header as required.
+	
+It is suggested that the polydriver run once at run time, the details of which
+are distribution dependant.  Usually the actual polydriver binary would be
+placed in /usr/local/sbin and a script to start and stop it would be placed in
+/etc/init.d and a link to this script from the relevant /etc/rcN.d directorys
+be set up to enable the polydriver to start automatically from the desired
+runlevels.
+
+Once again, these details are distribution dependant, and polydriver has only
+been tested on debian and knoppix distributions.
+
+Its options are as follows:
+
+	-b <basis> specifies the license number of the polybasis the same as
+	for the installer above.
+
+	-d enables extra debugging information to syslog.
+	WARNING DEBUG REDUCES PERFORMANCE SEVERLY
+
+	-f prevents polydriver from becoming a daemon and lets it run in the
+	foreground. Only useful for testing and debugging.
+
+	-h provides this information on command line options.
+
+	-m <modem> specifies the license number of the polymodem
+
+	-p <pty name> specifies the pty (and its corresponding tty) to use.
+	/dev/ptyp1 and /dev/ttyp1 are used by default.
+
+	-s <serial port> specifies the serial port that the polymodem is
+	connected to.  /dev/ttyS0 is the default.
+
+This does not need to be run as root, but it can be.
+
+LICENSE:
+
+This polydriver is licensed under the GNU Public License.  You can read the
+license terms and conditions in the files LICENSE and gpl.txt
+
+MODIFICATIONS:
+
+This driver is to be considered alpha software. It is an early version still
+undergoing testing by us in house. New versions with improvements will be
+released from time to time. It is also expected that the community will help
+by testing and reporting bugs, fixing those bugs, and sending in patches so we
+can share the improvements with everyone.
+
+NOTE:
+
+This driver was developed without any specifications whatsoever, it was
+developed with a combination of guesswork and reverse engineering. This
+driver can never be considered official or complete until I can see the
+specifications of the protocol, which is no longer possible.  The reference
+driver is the Windows 98 version, of which no source code is available.
+I have tried to make this driver perform as close to the windows 98 driver
+as possible, but nevertheless, its observed behavior is often different
+and/or unpredictable.
+
+CONTACT:
+
+For questions regarding this driver, please contact:
+
+Kurt Häusler
+
+PolyTrax GmbH
+Danziger Strasse 3
+83024 Rosenheim
+Germany
+
+haeusler@polytrax.com

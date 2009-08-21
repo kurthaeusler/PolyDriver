@@ -1,0 +1,95 @@
+The PolyTrax driver for linux is kept as simple and as general as possible
+so that it should work for all distributions. It is not a kernel driver like
+most hardware drivers it runs in user mode as a PTY/TTY pair.
+
+This means it works as a filter between the communications software and the
+hardware.
+
+The installer program must be run once, to initialize the devices. After that
+the polydriver program runs as a daemon in the background, and sets up the
+filter. It "listens" to a ttyp device, and when that device is opened by
+communications software (as if it were a normal modem device) then it in turn
+opens the actual serial port.
+
+Both programs require the basis and modem licence number to be given on the
+command line. These license numbers are found underneath the devices and look
+like: FGBCA9AXW2CK
+
+The driver is shipped as both source code and a compiled binary that should
+work for most people.
+
+If you want to recompile the driver yourself, do it with the "make all"
+command, this is optional however.
+
+Step 1. Installation. Simply run the installer as follows:
+
+bin/installer -b <basis> -m <modem> -s <serial port>
+
+An example in the typical case would look like:
+bin/installer -b FGBCA9AXW2CK -m FGBCA9X6EG41 -s /dev/ttyS0
+
+/dev/ttyS0 is the serial device corresponding to COM1. For a modem connected
+to COM2 the correct serial device would be /dev/ttyS1.
+
+The full usage of installer is as follows:
+usage: bin/installer -m modem -b basis [-s serial_port] [-h] [-d] [-i]
+
+Mandatory flags:
+-b, --basis             Specify basis license number. Example: --basis FGBCA953587A.
+-m, --modem             Specify modem license number. Example: --modem FGBCA96B36ZC.
+
+Optional flags:
+-d, --debug             Enable extra debugging output.
+-i, --ignore            Ignore errors.
+-h, --help              Print this usage screen.
+-s, --serial            Specify the actual serial port that the PolyModem is attached to. Default: /dev/ttyS0
+
+Step 2. Run the driver:
+
+To run the driver one runs the polydriver program as follows:
+
+bin/polydriver -b <basis> -m <modem> -s <serial port>
+
+An example in the typical case would look like:
+bin/polydriver -b FGBCA9AXW2CK -m FGBCA9X6EG41 -s /dev/ttyS0
+
+The full usage of polydriver is as follows:
+usage: bin/polydriver -m modem -b basis [-s serial_port] [-h] [-p pty_name] [-f] [-d]
+
+Mandatory flags:
+-b, --basis             Specify basis license number. Example: --basis FGBCA953587A.
+-m, --modem             Specify modem license number. Example: --modem FGBCA96B36ZC.
+
+Optional flags:
+-d, --debug             Debug mode.
+-f, --foreground        Don't become a daemon, stay in foreground attached to the terminal.
+-h, --help              Print this usage screen.
+-p, --pty               Specify the pty file name to try. Default: /dev/ptyp1.
+-s, --serial            Specify the actual serial port that the PolyModem is attached to. Default: /dev/ttyS0
+
+Two further optional steps include making a symlink from /dev/modem (which is
+the device that most communications software treats as the modem by default)
+to the actual ttyp that the driver listens on.
+
+Optional: ln -s /dev/ttyp1 /dev/modem
+
+This way communications software such as minicom or PPP can simply open the
+/dev/modem device as if it were a normal modem.
+
+After restarting your PC, the driver will not automatically restart. Most
+people will want to ensure that polydriver is started automatically upon
+system startup. How that happens is distribution dependant and cannont be
+described here. Please refer to your distribution documentation for
+information on starting polydriver with the system startup scripts.
+
+For technical support please contact:
+
+PolyTrax GmbH
+Danziger Strasse 3
+83024 Rosenheim
+Germany
+Tel +49 8031 2626 30
+Fax +49 8031 2626 53
+
+Email ptx2-hotline@polytrax.com
+Web www.polytrax.com

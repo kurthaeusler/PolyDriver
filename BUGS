@@ -1,0 +1,16 @@
+Sometimes the whole thing just pauses up, and theres no powerline activity,
+for up to a few seconds, even during downloads.
+
+MANY of the 4 byte headers it reads, arent headers, but actual data. It passes
+them on, which works, but the windows version, when reading a 4 byte header,
+gets only 4 byte headers. Thus reading 4 bytes, and not getting a header, is
+considered a bug.
+
+Sometimes PPP expects <lf> after CONNECT but never gets it.
+
+There are situations where polydriver then pppd crashes. This is related to:
+polydriver: ../sysdeps/generic/printf_fphex.c:163: __printf_fphex: Assertion `*decimal != '\0' && decimalwc != L'\0'' failed.
+Aborted
+when in the display function. Some invalid value being passed that cant be
+converted to a hex representation. Maybe an signed char vs unsigned char issue
+or something looking like a 0 in one representation but not in another..
